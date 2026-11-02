@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=KImagePlayground
+Comment=Estudio de creación visual e ilustración con conceptos para KDE Plasma
+Exec=kimageplayground
+Icon=draw-brush
+Type=Application
+Terminal=false
+Categories=Graphics;Utility;KDE;Qt;
+StartupNotify=true
+X-KDE-SubstituteUID=false
