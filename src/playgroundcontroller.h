@@ -39,6 +39,7 @@ public:
     Q_INVOKABLE void addConcept(const QString &conceptName);
     Q_INVOKABLE void removeConcept(const QString &conceptName);
     Q_INVOKABLE void clearConcepts();
+    Q_INVOKABLE void setPrimaryStyle(const QString &styleName);
     Q_INVOKABLE void generateImage(const QString &aspectRatio = QStringLiteral("1:1"));
     Q_INVOKABLE void selectImage(const QString &imagePath);
     Q_INVOKABLE void copyToClipboard(const QString &imagePath);

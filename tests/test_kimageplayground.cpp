@@ -15,6 +15,7 @@ class TestKImagePlayground : public QObject
 private Q_SLOTS:
     void testInitialization();
     void testConceptManagement();
+    void testSetPrimaryStyle();
     void testPromptUpdate();
     void testGalleryRefresh();
 };
@@ -42,6 +43,18 @@ void TestKImagePlayground::testConceptManagement()
 
     controller.clearConcepts();
     QCOMPARE(controller.selectedConcepts().isEmpty(), true);
+}
+
+void TestKImagePlayground::testSetPrimaryStyle()
+{
+    PlaygroundController controller;
+    controller.setPrimaryStyle(QStringLiteral("Animación 3D"));
+    QCOMPARE(controller.selectedConcepts().contains(QStringLiteral("Animación 3D")), true);
+
+    // Switching primary style replaces the old one
+    controller.setPrimaryStyle(QStringLiteral("Acuarela suave"));
+    QCOMPARE(controller.selectedConcepts().contains(QStringLiteral("Acuarela suave")), true);
+    QCOMPARE(controller.selectedConcepts().contains(QStringLiteral("Animación 3D")), false);
 }
 
 void TestKImagePlayground::testPromptUpdate()

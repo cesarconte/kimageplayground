@@ -87,6 +87,7 @@ void PlaygroundController::loadAvailableConcepts()
     m_availableConcepts = QVariantList{
         QVariantMap{
             {QStringLiteral("category"), QStringLiteral("Estilos")},
+            {QStringLiteral("icon"), QStringLiteral("draw-brush")},
             {QStringLiteral("items"), QStringList{
                 QStringLiteral("Animación 3D"),
                 QStringLiteral("Acuarela suave"),
@@ -100,6 +101,7 @@ void PlaygroundController::loadAvailableConcepts()
         },
         QVariantMap{
             {QStringLiteral("category"), QStringLiteral("Sujetos")},
+            {QStringLiteral("icon"), QStringLiteral("user")},
             {QStringLiteral("items"), QStringList{
                 QStringLiteral("Robot explorador"),
                 QStringLiteral("Gato con capa"),
@@ -113,6 +115,7 @@ void PlaygroundController::loadAvailableConcepts()
         },
         QVariantMap{
             {QStringLiteral("category"), QStringLiteral("Entornos")},
+            {QStringLiteral("icon"), QStringLiteral("places")},
             {QStringLiteral("items"), QStringList{
                 QStringLiteral("Playa al atardecer"),
                 QStringLiteral("Ciudad futurista lluviosa"),
@@ -124,6 +127,7 @@ void PlaygroundController::loadAvailableConcepts()
         },
         QVariantMap{
             {QStringLiteral("category"), QStringLiteral("Iluminación & Clima")},
+            {QStringLiteral("icon"), QStringLiteral("weather-clear")},
             {QStringLiteral("items"), QStringList{
                 QStringLiteral("Hora dorada (Golden Hour)"),
                 QStringLiteral("Luces de neón cyberpunk"),
@@ -134,6 +138,34 @@ void PlaygroundController::loadAvailableConcepts()
         }
     };
     Q_EMIT availableConceptsChanged();
+}
+
+void PlaygroundController::setPrimaryStyle(const QString &styleName)
+{
+    QStringList styleItems;
+    for (const auto &catVal : m_availableConcepts) {
+        const QVariantMap cat = catVal.toMap();
+        if (cat.value(QStringLiteral("category")).toString() == QStringLiteral("Estilos")) {
+            styleItems = cat.value(QStringLiteral("items")).toStringList();
+            break;
+        }
+    }
+
+    bool changed = false;
+    for (const QString &st : styleItems) {
+        if (m_selectedConcepts.removeAll(st) > 0) {
+            changed = true;
+        }
+    }
+    if (!styleName.trimmed().isEmpty()) {
+        m_selectedConcepts.prepend(styleName.trimmed());
+        changed = true;
+    }
+    if (changed) {
+        Q_EMIT selectedConceptsChanged();
+        m_statusMessage = QStringLiteral("Estilo establecido: ") + styleName;
+        Q_EMIT statusMessageChanged();
+    }
 }
 
 void PlaygroundController::addConcept(const QString &conceptName)
