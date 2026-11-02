@@ -10,80 +10,55 @@ import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 
-Window {
+Kirigami.ApplicationWindow {
     id: rootWindow
     width: 960
     height: 700
     visible: true
-    color: "transparent"
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
-    title: "KImagePlayground"
+    title: i18n("KImagePlayground — Estudio Creativo de Ilustración")
 
-    Rectangle {
-        id: mainSurface
+    ColumnLayout {
         anchors.fill: parent
-        anchors.margins: Kirigami.Units.smallSpacing
-        radius: Kirigami.Units.largeSpacing
-        color: Kirigami.Theme.backgroundColor
-        border.width: 1
-        border.color: Kirigami.ColorUtils.linearInterpolation(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, 0.18)
+        anchors.margins: Kirigami.Units.largeSpacing
+        spacing: Kirigami.Units.mediumSpacing
 
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: Kirigami.Units.largeSpacing
-            spacing: Kirigami.Units.mediumSpacing
+        // Top Header Actions Toolbar
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: Kirigami.Units.smallSpacing
 
-            // Header Toolbar
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: Kirigami.Units.smallSpacing
-
-                Kirigami.Icon {
-                    source: "draw-brush"
-                    implicitWidth: Kirigami.Units.iconSizes.medium
-                    implicitHeight: Kirigami.Units.iconSizes.medium
-                    color: Kirigami.Theme.highlightColor
-                }
-
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 0
-
-                    QQC2.Label {
-                        text: "KImagePlayground"
-                        font.pixelSize: 17
-                        font.bold: true
-                        color: Kirigami.Theme.textColor
-                    }
-
-                    QQC2.Label {
-                        text: "Estudio Creativo de Ilustración con Conceptos · Apple Intelligence"
-                        font.pixelSize: Kirigami.Theme.smallFont.pixelSize
-                        color: Kirigami.Theme.disabledTextColor
-                    }
-                }
-
-                QQC2.ToolButton {
-                    icon.name: "folder-pictures-symbolic"
-                    QQC2.ToolTip.visible: hovered
-                    QQC2.ToolTip.text: "Abrir galería (~/.local/share/kimageplayground/gallery)"
-                    onClicked: Playground.openGalleryFolder()
-                }
-
-                QQC2.ToolButton {
-                    icon.name: "view-refresh-symbolic"
-                    QQC2.ToolTip.visible: hovered
-                    QQC2.ToolTip.text: "Refrescar galería"
-                    onClicked: Playground.refreshGallery()
-                }
-
-                QQC2.ToolButton {
-                    icon.name: "window-close-symbolic"
-                    QQC2.ToolTip.visible: hovered
-                    QQC2.ToolTip.text: "Cerrar"
-                    onClicked: Qt.quit()
-                }
+            Kirigami.Icon {
+                source: "draw-brush"
+                implicitWidth: Kirigami.Units.iconSizes.smallMedium
+                implicitHeight: Kirigami.Units.iconSizes.smallMedium
+                color: Kirigami.Theme.highlightColor
             }
+
+            QQC2.Label {
+                text: "Estudio Creativo de Ilustración con Conceptos"
+                font.bold: true
+                color: Kirigami.Theme.textColor
+                Layout.fillWidth: true
+            }
+
+            QQC2.ToolButton {
+                icon.name: "folder-pictures-symbolic"
+                text: "Abrir carpeta"
+                display: QQC2.AbstractButton.TextBesideIcon
+                QQC2.ToolTip.visible: hovered
+                QQC2.ToolTip.text: "Abrir galería (~/.local/share/kimageplayground/gallery)"
+                onClicked: Playground.openGalleryFolder()
+            }
+
+            QQC2.ToolButton {
+                icon.name: "view-refresh-symbolic"
+                text: "Refrescar"
+                display: QQC2.AbstractButton.TextBesideIcon
+                QQC2.ToolTip.visible: hovered
+                QQC2.ToolTip.text: "Refrescar galería"
+                onClicked: Playground.refreshGallery()
+            }
+        }
 
             // Active Concept Chips Tray
             Rectangle {
@@ -494,5 +469,4 @@ Window {
                 }
             }
         }
-    }
 }
