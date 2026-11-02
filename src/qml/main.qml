@@ -292,7 +292,7 @@ Kirigami.ApplicationWindow {
         }
 
         // -------------------------------------------------------------
-        // 3. Creative Studio Drawer (Prompt, Active Chips & Categorized Picker)
+        // 3. Creative Studio Drawer (Prompt, Active Chips & Categorized Carousel)
         // -------------------------------------------------------------
         Rectangle {
             id: studioTray
@@ -422,7 +422,7 @@ Kirigami.ApplicationWindow {
                     }
                 }
 
-                // 3.C. Categorized Concept Picker (Clean Tabs + Ample Flow pills without clipping)
+                // 3.C. Categorized Horizontal Concept Carousel (Full width, 0 wasted space)
                 ColumnLayout {
                     Layout.fillWidth: true
                     visible: rootWindow.conceptDrawerOpen
@@ -486,82 +486,116 @@ Kirigami.ApplicationWindow {
                                     anchors.fill: parent
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: rootWindow.selectedCategoryIndex = catTab.index
+                                    onClicked: {
+                                        rootWindow.selectedCategoryIndex = catTab.index;
+                                        conceptListView.contentX = 0;
+                                    }
                                 }
                             }
                         }
+
+                        Item { Layout.fillWidth: true }
                     }
 
-                    // Concept Pills Flow (Never truncated, full comfort)
-                    QQC2.ScrollView {
+                    // True Horizontal Concept Carousel with Navigation Chevrons
+                    RowLayout {
                         Layout.fillWidth: true
-                        implicitHeight: Math.min(100, flowContainer.implicitHeight + 8)
-                        clip: true
+                        spacing: 4
 
-                        Flow {
-                            id: flowContainer
-                            width: parent.width
+                        QQC2.ToolButton {
+                            icon.name: "go-previous-symbolic"
+                            implicitWidth: 28
+                            implicitHeight: 34
+                            enabled: conceptListView.contentX > 0
+                            QQC2.ToolTip.visible: hovered
+                            QQC2.ToolTip.text: i18n("Anterior")
+                            onClicked: {
+                                conceptListView.contentX = Math.max(0, conceptListView.contentX - 280);
+                            }
+                        }
+
+                        ListView {
+                            id: conceptListView
+                            Layout.fillWidth: true
+                            implicitHeight: 38
+                            orientation: ListView.Horizontal
                             spacing: 8
-                            padding: 4
+                            clip: true
+                            boundsBehavior: Flickable.StopAtBounds
+                            flickableDirection: Flickable.HorizontalFlick
 
-                            Repeater {
-                                model: (Playground.availableConcepts.length > rootWindow.selectedCategoryIndex && rootWindow.selectedCategoryIndex >= 0)
-                                    ? Playground.availableConcepts[rootWindow.selectedCategoryIndex].items
-                                    : []
+                            Behavior on contentX {
+                                NumberAnimation { duration: 220; easing.type: Easing.OutQuad }
+                            }
 
-                                delegate: Rectangle {
-                                    id: conceptPill
-                                    required property string modelData
-                                    readonly property bool isSelected: Playground.selectedConcepts.indexOf(conceptPill.modelData) !== -1
+                            model: (Playground.availableConcepts.length > rootWindow.selectedCategoryIndex && rootWindow.selectedCategoryIndex >= 0)
+                                ? Playground.availableConcepts[rootWindow.selectedCategoryIndex].items
+                                : []
 
-                                    implicitHeight: 30
-                                    implicitWidth: pillContentRow.implicitWidth + 22
-                                    radius: 15
-                                    color: isSelected
-                                        ? Kirigami.Theme.highlightColor
-                                        : (pillMouse.containsMouse
-                                            ? Kirigami.ColorUtils.linearInterpolation(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, 0.12)
-                                            : Kirigami.Theme.backgroundColor)
-                                    border.width: 1
-                                    border.color: isSelected
-                                        ? Kirigami.Theme.highlightColor
-                                        : Kirigami.ColorUtils.linearInterpolation(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, 0.16)
+                            delegate: Rectangle {
+                                id: conceptPill
+                                required property string modelData
+                                readonly property bool isSelected: Playground.selectedConcepts.indexOf(conceptPill.modelData) !== -1
 
-                                    RowLayout {
-                                        id: pillContentRow
-                                        anchors.centerIn: parent
-                                        spacing: 4
+                                implicitHeight: 32
+                                implicitWidth: pillContentRow.implicitWidth + 24
+                                radius: 16
+                                color: isSelected
+                                    ? Kirigami.Theme.highlightColor
+                                    : (pillMouse.containsMouse
+                                        ? Kirigami.ColorUtils.linearInterpolation(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, 0.12)
+                                        : Kirigami.Theme.backgroundColor)
+                                border.width: 1
+                                border.color: isSelected
+                                    ? Kirigami.Theme.highlightColor
+                                    : Kirigami.ColorUtils.linearInterpolation(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, 0.16)
 
-                                        Kirigami.Icon {
-                                            visible: conceptPill.isSelected
-                                            source: "checkmark"
-                                            implicitWidth: 12
-                                            implicitHeight: 12
-                                            color: Kirigami.Theme.highlightedTextColor
-                                        }
+                                RowLayout {
+                                    id: pillContentRow
+                                    anchors.centerIn: parent
+                                    spacing: 6
 
-                                        QQC2.Label {
-                                            text: conceptPill.modelData
-                                            font.pixelSize: Kirigami.Theme.smallFont.pixelSize
-                                            font.bold: conceptPill.isSelected
-                                            color: conceptPill.isSelected ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
-                                        }
+                                    Kirigami.Icon {
+                                        visible: conceptPill.isSelected
+                                        source: "checkmark"
+                                        implicitWidth: 12
+                                        implicitHeight: 12
+                                        color: Kirigami.Theme.highlightedTextColor
                                     }
 
-                                    MouseArea {
-                                        id: pillMouse
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: {
-                                            if (conceptPill.isSelected) {
-                                                Playground.removeConcept(conceptPill.modelData);
-                                            } else {
-                                                Playground.addConcept(conceptPill.modelData);
-                                            }
+                                    QQC2.Label {
+                                        text: conceptPill.modelData
+                                        font.pixelSize: Kirigami.Theme.smallFont.pixelSize
+                                        font.bold: conceptPill.isSelected
+                                        color: conceptPill.isSelected ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: pillMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        if (conceptPill.isSelected) {
+                                            Playground.removeConcept(conceptPill.modelData);
+                                        } else {
+                                            Playground.addConcept(conceptPill.modelData);
                                         }
                                     }
                                 }
+                            }
+                        }
+
+                        QQC2.ToolButton {
+                            icon.name: "go-next-symbolic"
+                            implicitWidth: 28
+                            implicitHeight: 34
+                            enabled: (conceptListView.contentWidth > conceptListView.width) && (conceptListView.contentX + conceptListView.width < conceptListView.contentWidth - 2)
+                            QQC2.ToolTip.visible: hovered
+                            QQC2.ToolTip.text: i18n("Siguiente")
+                            onClicked: {
+                                conceptListView.contentX = Math.min(conceptListView.contentWidth - conceptListView.width, conceptListView.contentX + 280);
                             }
                         }
                     }
@@ -570,10 +604,11 @@ Kirigami.ApplicationWindow {
         }
 
         // -------------------------------------------------------------
-        // 4. Bottom History Gallery Carousel
+        // 4. Bottom History Gallery Carousel (Only shown when artwork exists)
         // -------------------------------------------------------------
         Rectangle {
             Layout.fillWidth: true
+            visible: Playground.galleryImages.length > 0
             implicitHeight: 76
             radius: Kirigami.Units.mediumSpacing
             color: Kirigami.Theme.alternateBackgroundColor
@@ -592,19 +627,10 @@ Kirigami.ApplicationWindow {
                     color: Kirigami.Theme.disabledTextColor
                 }
 
-                QQC2.Label {
-                    visible: Playground.galleryImages.length === 0
-                    text: i18n("Las ilustraciones creadas aparecerán aquí.")
-                    font.italic: true
-                    font.pixelSize: Kirigami.Theme.smallFont.pixelSize
-                    color: Kirigami.Theme.disabledTextColor
-                }
-
                 QQC2.ScrollView {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     clip: true
-                    visible: Playground.galleryImages.length > 0
 
                     Row {
                         spacing: 8

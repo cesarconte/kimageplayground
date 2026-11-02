@@ -87,7 +87,7 @@ void PlaygroundController::loadAvailableConcepts()
     m_availableConcepts = QVariantList{
         QVariantMap{
             {QStringLiteral("category"), QStringLiteral("Estilos")},
-            {QStringLiteral("icon"), QStringLiteral("draw-brush")},
+            {QStringLiteral("icon"), QStringLiteral("draw-brush-symbolic")},
             {QStringLiteral("items"), QStringList{
                 QStringLiteral("Animación 3D"),
                 QStringLiteral("Acuarela suave"),
@@ -101,7 +101,7 @@ void PlaygroundController::loadAvailableConcepts()
         },
         QVariantMap{
             {QStringLiteral("category"), QStringLiteral("Sujetos")},
-            {QStringLiteral("icon"), QStringLiteral("user")},
+            {QStringLiteral("icon"), QStringLiteral("user-identity-symbolic")},
             {QStringLiteral("items"), QStringList{
                 QStringLiteral("Robot explorador"),
                 QStringLiteral("Gato con capa"),
@@ -115,7 +115,7 @@ void PlaygroundController::loadAvailableConcepts()
         },
         QVariantMap{
             {QStringLiteral("category"), QStringLiteral("Entornos")},
-            {QStringLiteral("icon"), QStringLiteral("places")},
+            {QStringLiteral("icon"), QStringLiteral("tag-places-symbolic")},
             {QStringLiteral("items"), QStringList{
                 QStringLiteral("Playa al atardecer"),
                 QStringLiteral("Ciudad futurista lluviosa"),
@@ -127,7 +127,7 @@ void PlaygroundController::loadAvailableConcepts()
         },
         QVariantMap{
             {QStringLiteral("category"), QStringLiteral("Iluminación & Clima")},
-            {QStringLiteral("icon"), QStringLiteral("weather-clear")},
+            {QStringLiteral("icon"), QStringLiteral("flashlight-on-symbolic")},
             {QStringLiteral("items"), QStringList{
                 QStringLiteral("Hora dorada (Golden Hour)"),
                 QStringLiteral("Luces de neón cyberpunk"),
