@@ -16,6 +16,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    KLocalizedString::setApplicationDomain(QByteArrayLiteral("kimageplayground"));
     app.setOrganizationName(QStringLiteral("Cesar"));
     app.setOrganizationDomain(QStringLiteral("cesar.org"));
     app.setApplicationName(QStringLiteral("kimageplayground"));
