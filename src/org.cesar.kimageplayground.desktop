@@ -5,6 +5,6 @@ Exec=kimageplayground
 Icon=draw-brush
 Type=Application
 Terminal=false
-Categories=Graphics;Utility;KDE;Qt;
+Categories=Graphics;2DGraphics;KDE;Qt;
 StartupNotify=true
 X-KDE-SubstituteUID=false
