@@ -9,6 +9,7 @@
 #include <QIcon>
 #include <KAboutData>
 #include <KLocalizedString>
+#include <KLocalizedContext>
 
 #include "playgroundcontroller.h"
 
@@ -17,7 +18,8 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     app.setOrganizationName(QStringLiteral("Cesar"));
     app.setOrganizationDomain(QStringLiteral("cesar.org"));
-    app.setApplicationName(QStringLiteral("KImagePlayground"));
+    app.setApplicationName(QStringLiteral("kimageplayground"));
+    app.setDesktopFileName(QStringLiteral("org.cesar.kimageplayground"));
     app.setWindowIcon(QIcon::fromTheme(QStringLiteral("draw-brush")));
 
     KAboutData aboutData(
@@ -33,6 +35,7 @@ int main(int argc, char *argv[])
     PlaygroundController controller;
 
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextObject(new KLocalizedContext(&engine));
     engine.rootContext()->setContextProperty(QStringLiteral("Playground"), &controller);
 
     const QUrl url(QStringLiteral("qrc:/qt/qml/org/cesar/kimageplayground/main.qml"));
