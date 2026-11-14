@@ -5,6 +5,7 @@
 
 #include "playgroundcontroller.h"
 
+#include <QBuffer>
 #include <QClipboard>
 #include <QDateTime>
 #include <QDesktopServices>
@@ -310,12 +311,19 @@ void PlaygroundController::copyToClipboard(const QString &imagePath)
     QImage img(imagePath);
     if (!img.isNull()) {
         QGuiApplication::clipboard()->setImage(img);
-    }
 
-    QProcess wlProc;
-    wlProc.setStandardInputFile(imagePath);
-    wlProc.start(QStringLiteral("wl-copy"), {QStringLiteral("--type"), QStringLiteral("image/png")});
-    wlProc.waitForFinished(1000);
+        QByteArray pngBytes;
+        QBuffer buffer(&pngBytes);
+        if (buffer.open(QIODevice::WriteOnly) && img.save(&buffer, "PNG")) {
+            QProcess wlProc;
+            wlProc.start(QStringLiteral("wl-copy"), {QStringLiteral("--type"), QStringLiteral("image/png")});
+            if (wlProc.waitForStarted(1000)) {
+                wlProc.write(pngBytes);
+                wlProc.closeWriteChannel();
+                wlProc.waitForFinished(1000);
+            }
+        }
+    }
 
     m_statusMessage = QStringLiteral("Imagen copiada al portapapeles de Wayland.");
     Q_EMIT statusMessageChanged();
@@ -344,8 +352,10 @@ void PlaygroundController::liftSubjectSticker(const QString &imagePath)
         return;
     }
 
-    const QString homeDir = QDir::homePath();
-    const QString liftSubjectBin = homeDir + QStringLiteral("/.local/bin/kliftsubject");
+    QString liftSubjectBin = QStandardPaths::findExecutable(QStringLiteral("kliftsubject"));
+    if (liftSubjectBin.isEmpty()) {
+        liftSubjectBin = QDir::homePath() + QStringLiteral("/.local/bin/kliftsubject");
+    }
 
     if (QFile::exists(liftSubjectBin)) {
         m_statusMessage = QStringLiteral("Extrayendo sujeto con KLiftSubject (IA local)...");
@@ -353,7 +363,7 @@ void PlaygroundController::liftSubjectSticker(const QString &imagePath)
 
         QProcess proc;
         proc.start(liftSubjectBin, {QStringLiteral("--sticker"), imagePath});
-        if (proc.waitForFinished(20000)) {
+        if (proc.waitForFinished(60000)) {
             const QString stickerVariant = imagePath.left(imagePath.lastIndexOf(QLatin1Char('.'))) + QStringLiteral("-sticker.png");
             if (QFile::exists(stickerVariant)) {
                 copyToClipboard(stickerVariant);

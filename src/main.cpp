@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain(QStringLiteral("cesar.org"));
     app.setApplicationName(QStringLiteral("kimageplayground"));
     app.setDesktopFileName(QStringLiteral("org.cesar.kimageplayground"));
-    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("draw-brush")));
+    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("org.cesar.kimageplayground"), QIcon::fromTheme(QStringLiteral("draw-brush"))));
 
     KAboutData aboutData(
         QStringLiteral("kimageplayground"),
